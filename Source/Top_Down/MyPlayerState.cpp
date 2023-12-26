@@ -9,23 +9,23 @@ AMyPlayerState::AMyPlayerState()
     MyScore = 0;
 }
 
-/*void AMyPlayerState::AddScore(float ScoreDelta)
+void AMyPlayerState::AddScore(float ScoreDelta)
 {
     if (HasAuthority())
     {
-        //MyScore += ScoreDelta;
+        MyScore += ScoreDelta;
         // Optional: Notify the clients about the score update, if needed
     }
-}*/
+}
 
-/*void AMyPlayerState::OnRep_MyScore()
+void AMyPlayerState::OnRep_MyScore()
 {
     AVehicleCharacter* VehicleChar = Cast<AVehicleCharacter>(GetPawn());
     if (VehicleChar)
     {
        // VehicleChar->UpdateHUDScore(MyScore);
     }
-}*/
+}
 
 
 void AMyPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

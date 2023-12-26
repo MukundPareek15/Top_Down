@@ -64,7 +64,7 @@ AVehicleCharacter::AVehicleCharacter()
 	//HUD
 	PlayerHUDClass = nullptr;
 	PlayerHud = nullptr;
-	Score = 0.0f;
+	//Score = 0.0f;
 	MaxScore = 250.0f;
 
 	// Activate ticking in order to update the cursor every frame.
