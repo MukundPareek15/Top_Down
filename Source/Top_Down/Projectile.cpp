@@ -98,15 +98,23 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
                 GM->PlayerHit();
                 if (AVehicleCharacter* ShootingVehicle = Cast<AVehicleCharacter>(GetOwner()))
                 {
-                    if (AMyPlayerState* PS = ShootingVehicle->GetPlayerState<AMyPlayerState>())
+                    if (ShootingVehicle)
                     {
-                        PS->PlayerHit();
-                        if (OtherVehicle)
+                        if (AMyPlayerState* PS = ShootingVehicle->GetPlayerState<AMyPlayerState>())
                         {
-                            
-                            OtherVehicle->Die();
+                            PS->PlayerHit();
+                            if (OtherVehicle)
+                            {
+
+                                OtherVehicle->Die();
+                            }
                         }
                     }
+                }
+                else
+                {
+                    // ShootingVehicle is not valid, handle this situation
+                    UE_LOG(LogTemp, Warning, TEXT("ShootingVehicle is not valid."));
                 }
             }
         }

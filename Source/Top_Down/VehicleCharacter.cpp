@@ -79,7 +79,7 @@ AVehicleCharacter::AVehicleCharacter()
 void AVehicleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	//SetReplicates(true);
+	SetReplicates(true);
 	
 	if (IsLocallyControlled() && PlayerHUDClass)
 	{
@@ -128,6 +128,9 @@ void AVehicleCharacter::Fire()
     {
         // Set the projectile's owner to be this vehicle character
         Projectile->SetOwner(this);
+
+		UE_LOG(LogTemp, Warning, TEXT("Get Owner"))
+		//Projectile->SetReplicates(true); 
 
         // Launch the projectile
         Projectile->LaunchProjectile(LaunchSpeed);
@@ -245,7 +248,7 @@ void AVehicleCharacter::Die()
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AVehicleCharacter has died"));
 		}
-		GetWorld()->GetTimerManager().SetTimer(DestroyHandle, this, &AVehicleCharacter::CallDestroy, 5.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(DestroyHandle, this, &AVehicleCharacter::CallDestroy, 0.5f, false);
 	}
 }
 
