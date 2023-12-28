@@ -79,7 +79,7 @@ AVehicleCharacter::AVehicleCharacter()
 void AVehicleCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SetReplicates(true);
+	//SetReplicates(true);
 	
 	if (IsLocallyControlled() && PlayerHUDClass)
 	{
@@ -119,18 +119,27 @@ void AVehicleCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AVehicleCharacter::Fire()
 {
-	if (!ensure(ProjectileRoot)) { return; } // Barrel is a local reference to the barrel we have attached to our tank model. This is used to determine the world location where to spawn the projectile. This line provides protection against invalid or nullptrs.
-	// UE4 provides a SpawnActor function that needs a type to cast the Actor to and a Location and Rotation of where to spawn the Actor in the world.
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
-	// Call the LaunchProjectile function of our newly created Projectile with our tank's launch speed
-	Projectile->LaunchProjectile(LaunchSpeed);
-	SetInstigator(this);
-	if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
-	{
-		ServerFire();
-	}
-	
+    if (!ensure(ProjectileRoot)) { return; }
+
+    // Spawn the projectile at the specified location and rotation
+    auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
+    
+    if (Projectile)
+    {
+        // Set the projectile's owner to be this vehicle character
+        Projectile->SetOwner(this);
+
+        // Launch the projectile
+        Projectile->LaunchProjectile(LaunchSpeed);
+
+        // If this is the player character, call the server fire function
+        if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
+        {
+            ServerFire();
+        }
+    }
 }
+
 
 bool AVehicleCharacter::ServerFire_Validate()
 {
@@ -141,16 +150,24 @@ void AVehicleCharacter::ServerFire_Implementation()
 {
 	if (HasAuthority())
 	{ 
-	if (!ensure(ProjectileRoot)) { return; } // Barrel is a local reference to the barrel we have attached to our tank model. This is used to determine the world location where to spawn the projectile. This line provides protection against invalid or nullptrs.
-	// UE4 provides a SpawnActor function that needs a type to cast the Actor to and a Location and Rotation of where to spawn the Actor in the world.
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
-	// Call the LaunchProjectile function of our newly created Projectile with our tank's launch speed
-	Projectile->LaunchProjectile(LaunchSpeed);
-	SetInstigator(this);
-		if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
+		if (!ensure(ProjectileRoot)) { return; }
 
+		// Spawn the projectile at the specified location and rotation
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
+
+		if (Projectile)
 		{
-			//Die
+			// Set the projectile's owner to be this vehicle character
+			Projectile->SetOwner(this);
+
+			// Launch the projectile
+			Projectile->LaunchProjectile(LaunchSpeed);
+
+			// If this is the player character, call the server fire function
+			if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
+			{
+				//ServerFire();
+			}
 		}
 	}
 }

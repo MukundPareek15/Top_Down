@@ -14,6 +14,8 @@ class TOP_DOWN_API AMyGameModeBase : public AGameModeBase
 public:
     AMyGameModeBase();
 
+    void PlayerHit();
+
 protected:
     TArray<class ASpawnPoint*> SpawnPoints;
     FVector DefaultSpawnLocation;

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "GenericPlatform/GenericPlatform.h"
 #include "MyGameState.generated.h"
 
 UCLASS()
@@ -12,11 +13,17 @@ class TOP_DOWN_API AMyGameState : public AGameStateBase
     GENERATED_BODY()
 
 public:
+    AMyGameState();
     // Function to update the game timer
     void UpdateGameTimer();
 
+    UPROPERTY(ReplicatedUsing = OnRep_TotalHits)
+    uint16 TotalHits;
+
+    UFUNCTION()
+    void OnRep_TotalHits();
 protected:
-    AMyGameState();
+    
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -33,4 +40,8 @@ public:
     int32 GameTimer;
 
     // Add more replicated game state properties as needed
+
+    void PlayerHit();
+
+    uint16 GetTotalHits() { return TotalHits; }
 };

@@ -10,6 +10,8 @@
 #include "EngineUtils.h"
 #include "Math/UnrealMathUtility.h"
 #include "TimerManager.h"
+#include "MyGameState.h"
+#include "MyHUD.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -31,7 +33,16 @@ AMyGameModeBase::AMyGameModeBase()
 	}
 
 	DefaultSpawnLocation = FVector(760.0f, 560.0f, 200.0f);
-	RespawnTime = 5.0f;
+	RespawnTime = 1.0f;
+}
+
+void AMyGameModeBase::PlayerHit()
+{
+	if (AMyGameState* GS = GetGameState< AMyGameState>())
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Player Hit Game Mode"));
+		GS->PlayerHit();
+	}
 }
 
 void AMyGameModeBase::BeginPlay()

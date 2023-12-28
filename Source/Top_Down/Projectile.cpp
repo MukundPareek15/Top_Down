@@ -13,6 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "VehicleCharacter.h"
 #include "Net/UnrealNetwork.h"
+#include "MyGameModeBase.h"
 
 AProjectile::AProjectile()
 {
@@ -64,26 +65,49 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+    if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL)  && OtherComp->IsSimulatingPhysics())
     {
+        UE_LOG(LogTemp, Warning, TEXT("HIT A PHYSICS OBJ"));
         if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
         {
-            AVehicleCharacter* OtherVehicle = Cast<AVehicleCharacter>(OtherActor);
-            if(OtherVehicle)
-            {
-                OtherVehicle->Die();
-                //and add the count of the kill in your Hud
+            //AVehicleCharacter* OtherVehicle = Cast<AVehicleCharacter>(OtherActor);
+            //if (OtherVehicle)
+            //{
+            //    OtherVehicle->Die();
+            //    //and add the count of the kill in your Hud
 
-                AVehicleCharacter* Target = Cast<AVehicleCharacter>(OtherActor);
-                AVehicleCharacter* Shooter = GetInstigator<AVehicleCharacter>();
-                if (Target && Target != Shooter && Target->GetLocalRole() == ROLE_Authority)
-                {
-                    Target->UpdateScore(ScoreDelta);
-                }
-            }
-            else
+            //    /*AVehicleCharacter* Target = Cast<AVehicleCharacter>(OtherActor);
+            //    AVehicleCharacter* Shooter = GetInstigator<AVehicleCharacter>();
+            //    if (Target && Target != Shooter && Target->GetLocalRole() == ROLE_Authority)
+            //    {
+            //        Target->UpdateScore(ScoreDelta);
+            //    }*/
+            //}
+            //else
+            //{
+            //    //return NULL;
+            //}
+        }
+    }
+    else if (HasAuthority())
+    {
+        if (AVehicleCharacter* OtherVehicle = Cast<AVehicleCharacter>(OtherActor))
+        {
+            if (AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>())
             {
-                //return NULL;
+                GM->PlayerHit();
+                if (AVehicleCharacter* ShootingVehicle = Cast<AVehicleCharacter>(GetOwner()))
+                {
+                    if (AMyPlayerState* PS = ShootingVehicle->GetPlayerState<AMyPlayerState>())
+                    {
+                        PS->PlayerHit();
+                        if (OtherVehicle)
+                        {
+                            
+                            OtherVehicle->Die();
+                        }
+                    }
+                }
             }
         }
     }
