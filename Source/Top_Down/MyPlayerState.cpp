@@ -10,6 +10,7 @@ AMyPlayerState::AMyPlayerState()
     //MyScore = 0;
 }
 
+<<<<<<< HEAD
 //void AMyPlayerState::AddScore(float ScoreDelta)
 //{
 //    if (HasAuthority())
@@ -27,6 +28,25 @@ AMyPlayerState::AMyPlayerState()
 //       // VehicleChar->UpdateHUDScore(MyScore);
 //    }
 //}
+=======
+/*void AMyPlayerState::AddScore(float ScoreDelta)
+{
+    if (HasAuthority())
+    {
+        //MyScore += ScoreDelta;
+        // Optional: Notify the clients about the score update, if needed
+    }
+}*/
+
+/*void AMyPlayerState::OnRep_MyScore()
+{
+    AVehicleCharacter* VehicleChar = Cast<AVehicleCharacter>(GetPawn());
+    if (VehicleChar)
+    {
+       // VehicleChar->UpdateHUDScore(MyScore);
+    }
+}*/
+>>>>>>> parent of 1445803 (Just some changes)
 
 
 void AMyPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
