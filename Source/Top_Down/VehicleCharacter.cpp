@@ -5,7 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
-//#include "Components/CapsuleComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "MyHUD.h"
@@ -124,23 +124,13 @@ void AVehicleCharacter::Fire()
     // Spawn the projectile at the specified location and rotation
     auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
     
-    if (Projectile)
-    {
-        // Set the projectile's owner to be this vehicle character
-        Projectile->SetOwner(this);
-
-		UE_LOG(LogTemp, Warning, TEXT("Get Owner"))
-		//Projectile->SetReplicates(true); 
-
-        // Launch the projectile
-        Projectile->LaunchProjectile(LaunchSpeed);
-
-        // If this is the player character, call the server fire function
-        if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
-        {
-            ServerFire();
-        }
-    }
+	// Call the LaunchProjectile function of our newly created Projectile with our tank's launch speed
+	Projectile->LaunchProjectile(LaunchSpeed);
+	SetInstigator(this);
+	if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
+	{
+		ServerFire();
+	}
 }
 
 
@@ -158,19 +148,13 @@ void AVehicleCharacter::ServerFire_Implementation()
 		// Spawn the projectile at the specified location and rotation
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileActor, ProjectileRoot->GetSocketLocation(FName("Projectile")), ProjectileRoot->GetSocketRotation(FName("Projectile")));
 
-		if (Projectile)
+		// Call the LaunchProjectile function of our newly created Projectile with our tank's launch speed
+		Projectile->LaunchProjectile(LaunchSpeed);
+		SetInstigator(this);
+		if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
+
 		{
-			// Set the projectile's owner to be this vehicle character
-			Projectile->SetOwner(this);
-
-			// Launch the projectile
-			Projectile->LaunchProjectile(LaunchSpeed);
-
-			// If this is the player character, call the server fire function
-			if (AVehicleCharacter* Player = Cast<AVehicleCharacter>(this))
-			{
-				//ServerFire();
-			}
+			//Die
 		}
 	}
 }
@@ -248,7 +232,7 @@ void AVehicleCharacter::Die()
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("AVehicleCharacter has died"));
 		}
-		GetWorld()->GetTimerManager().SetTimer(DestroyHandle, this, &AVehicleCharacter::CallDestroy, 0.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(DestroyHandle, this, &AVehicleCharacter::CallDestroy, 3.0f, false);
 	}
 }
 
@@ -260,7 +244,8 @@ bool AVehicleCharacter::MultiDie_Validate()
 void AVehicleCharacter::MultiDie_Implementation()
 {
 	//ShutDown
-	GetCharacterMovement()->DisableMovement();
+	GetCapsuleComponent()->DestroyComponent();
+	this->GetCharacterMovement()->DisableMovement();
 	this->GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	this->GetMesh()->SetAllBodiesSimulatePhysics(true);
 }

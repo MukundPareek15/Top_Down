@@ -32,7 +32,7 @@ AMyGameModeBase::AMyGameModeBase()
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
 
-	DefaultSpawnLocation = FVector(760.0f, 560.0f, 200.0f);
+	DefaultSpawnLocation = FVector(960.0f, 860.0f, 200.0f);
 	RespawnTime = 1.0f;
 }
 
@@ -105,7 +105,7 @@ void AMyGameModeBase::Respawn(AController* Controller)
 	{
 		if (HasAuthority())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IN RESPAWN"));
+			//UE_LOG(LogTemp, Warning, TEXT("IN RESPAWN"));
 
 			FTimerDelegate RespawnDele;
 			RespawnDele.BindUFunction(this, FName("Spawn"), Controller);
@@ -115,3 +115,4 @@ void AMyGameModeBase::Respawn(AController* Controller)
 	}
 }
 
+	

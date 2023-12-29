@@ -70,23 +70,24 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
         UE_LOG(LogTemp, Warning, TEXT("HIT A PHYSICS OBJ"));
         if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
         {
-            //AVehicleCharacter* OtherVehicle = Cast<AVehicleCharacter>(OtherActor);
-            //if (OtherVehicle)
-            //{
-            //    OtherVehicle->Die();
-            //    //and add the count of the kill in your Hud
+            
+            AVehicleCharacter* OtherVehicle = Cast<AVehicleCharacter>(OtherActor);
+            if (OtherVehicle)
+            {
+                OtherVehicle->Die();
+                //and add the count of the kill in your Hud
 
-            //    /*AVehicleCharacter* Target = Cast<AVehicleCharacter>(OtherActor);
-            //    AVehicleCharacter* Shooter = GetInstigator<AVehicleCharacter>();
-            //    if (Target && Target != Shooter && Target->GetLocalRole() == ROLE_Authority)
-            //    {
-            //        Target->UpdateScore(ScoreDelta);
-            //    }*/
-            //}
-            //else
-            //{
-            //    //return NULL;
-            //}
+                AVehicleCharacter* Target = Cast<AVehicleCharacter>(OtherActor);
+                AVehicleCharacter* Shooter = GetInstigator<AVehicleCharacter>();
+                if (Target && Target != Shooter && Target->GetLocalRole() == ROLE_Authority)
+                {
+                    Target->UpdateScore(ScoreDelta);
+                }
+            }
+            else
+            {
+                //return NULL;
+            }
         }
     }
     else if (HasAuthority())
@@ -96,26 +97,31 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
             if (AMyGameModeBase* GM = GetWorld()->GetAuthGameMode<AMyGameModeBase>())
             {
                 GM->PlayerHit();
-                if (AVehicleCharacter* ShootingVehicle = Cast<AVehicleCharacter>(GetOwner()))
+                if (OtherVehicle)
                 {
-                    if (ShootingVehicle)
-                    {
-                        if (AMyPlayerState* PS = ShootingVehicle->GetPlayerState<AMyPlayerState>())
-                        {
-                            PS->PlayerHit();
-                            if (OtherVehicle)
-                            {
 
-                                OtherVehicle->Die();
-                            }
-                        }
-                    }
+                    OtherVehicle->Die();
                 }
-                else
-                {
-                    // ShootingVehicle is not valid, handle this situation
-                    UE_LOG(LogTemp, Warning, TEXT("ShootingVehicle is not valid."));
-                }
+                //if (AVehicleCharacter* ShootingVehicle = Cast<AVehicleCharacter>(GetOwner()))
+                //{
+                //    if (ShootingVehicle)
+                //    {
+                //        if (AMyPlayerState* PS = ShootingVehicle->GetPlayerState<AMyPlayerState>())
+                //        {
+                //            PS->PlayerHit();
+                //            if (OtherVehicle)
+                //            {
+
+                //                OtherVehicle->Die();
+                //            }
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    // ShootingVehicle is not valid, handle this situation
+                //    UE_LOG(LogTemp, Warning, TEXT("ShootingVehicle is not valid."));
+                //}
             }
         }
     }

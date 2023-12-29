@@ -39,7 +39,7 @@ void AMyGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 void AMyGameState::OnRep_TotalHits()
 {
-    //UE_LOG(LogTemp, Warning, TEXT("Client: TotalHits: %d"), TotalHits);
+    UE_LOG(LogTemp, Warning, TEXT("Client: TotalHits: %d"), TotalHits);
 }
 
 
@@ -47,8 +47,8 @@ void AMyGameState::PlayerHit()
 {
     if (HasAuthority())
     {
-        //UE_LOG(LogTemp, Warning, TEXT("Player Hit Game State"));
+        UE_LOG(LogTemp, Warning, TEXT("Player Hit Game State"));
         ++TotalHits;
-        //UE_LOG(LogTemp, Warning, TEXT("Server: TotalHits: %d"), TotalHits);
+        UE_LOG(LogTemp, Warning, TEXT("Server: TotalHits: %d"), TotalHits);
     }
 }

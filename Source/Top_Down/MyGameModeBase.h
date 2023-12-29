@@ -19,6 +19,7 @@ public:
 protected:
     TArray<class ASpawnPoint*> SpawnPoints;
     FVector DefaultSpawnLocation;
+    //FTimerHandle RespawnHandle;
 
     UPROPERTY(EditAnywhere, Category = "S|Respawn")
     float RespawnTime;
